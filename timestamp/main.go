@@ -20,8 +20,10 @@ import (
 const day = 24 * time.Hour
 
 var (
-	epoch   = time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC)
-	formats = []string{
+	epoch = time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC)
+
+	// inputFormats identifies the time formats used to parse user input.
+	inputFormats = []string{
 		time.RFC3339,
 		"2006-01-02",
 		"2006-01-02T15:04:05",
@@ -99,7 +101,7 @@ func parseInput(s string, loc *time.Location) time.Time {
 		return time.Unix(i, 0).In(loc)
 	}
 
-	for _, f := range formats {
+	for _, f := range inputFormats {
 		if t, err := time.ParseInLocation(f, s, loc); err == nil {
 			return t
 		}
