@@ -43,7 +43,8 @@ timestamp will print the specified time in the following formats:
   - unix timestamp (number of seconds since January 1, 1970 UTC)
   - rfc 3339 timestamp in the specified timezone (if not UTC)
   - rfc 3339 timestamp in UTC
-  - ordinal date (year and day of the year)
+  - ordinal date (year and day of the year) in the specified timezone
+  - ordinal date (year and day of the year) in UTC (if different than above)
   - epoch days (number of days since January 1, 1970 UTC) as decimal and
     sexigesimal (newbase60) formatted. This is only printed if date is after
     1970-01-01, and is always calculated based on UTC time.
@@ -85,6 +86,9 @@ func main() {
 	}
 	printTime("%s", "RFC 3339 (UTC)", t.UTC().Format(time.RFC3339))
 	printTime("%d-%d", "Ordinal Date", t.Year(), t.YearDay())
+	if t.YearDay() != t.UTC().YearDay() {
+		printTime("%d-%d", "Ordinal Date (UTC)", t.UTC().Year(), t.UTC().YearDay())
+	}
 
 	epochDays := int(t.UTC().Sub(epoch) / day)
 	if epochDays > 0 {
@@ -113,5 +117,5 @@ func parseInput(s string, loc *time.Location) time.Time {
 func printTime(format, name string, a ...interface{}) {
 	b := []interface{}{name + ":"}
 	b = append(b, a...)
-	fmt.Printf("%-15s "+format+"\n", b...)
+	fmt.Printf("%-19s "+format+"\n", b...)
 }
