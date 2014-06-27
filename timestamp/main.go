@@ -29,7 +29,7 @@ var (
 	}
 
 	//flags
-	utc = flag.Bool("utc", false, "parse input as UTC")
+	utc = flag.Bool("utc", false, "parse times without timezones as UTC")
 )
 
 func main() {
@@ -63,11 +63,11 @@ func main() {
 
 func parseInput(s string, loc *time.Location) time.Time {
 	if s == "" {
-		return time.Now()
+		return time.Now().In(loc)
 	}
 
 	if i, err := strconv.ParseInt(s, 10, 64); err == nil {
-		return time.Unix(i, 0)
+		return time.Unix(i, 0).In(loc)
 	}
 
 	for _, f := range formats {
