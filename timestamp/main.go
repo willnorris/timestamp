@@ -31,13 +31,15 @@ var (
 	}
 
 	//flags
-	utc = flag.Bool("utc", false, "parse times without timezones as UTC")
+	utc            = flag.Bool("utc", false, "parse times without timezones as UTC")
+	printRFC3339   = flag.Bool("rfc3339", false, "print rfc 3339 timestamp only")
+	printEpochDays = flag.Bool("epoch", false, "print epoch days only")
 )
 
 const usageText = `timestamp is a tool for printing timestamps in various formats.
 
 Usage:
-  timestamp [-utc] [time]
+  timestamp [-utc] [-rfc3339] [-epoch] [time]
 
 timestamp will print the specified time in the following formats:
   - unix timestamp (number of seconds since January 1, 1970 UTC)
@@ -73,10 +75,21 @@ func main() {
 	}
 
 	t := parseInput(flag.Arg(0), loc)
+	epochDays := int(t.UTC().Sub(epoch) / day)
 
 	if t.IsZero() {
 		fmt.Fprintln(os.Stderr, "Unable to parse timestamp")
 		os.Exit(1)
+	}
+
+	if *printRFC3339 {
+		print(t.Format(time.RFC3339))
+		return
+	}
+
+	if *printEpochDays {
+		print(newbase60.EncodeInt(epochDays))
+		return
 	}
 
 	fmt.Printf("%s\n\n", t)
@@ -90,7 +103,6 @@ func main() {
 		printTime("%d-%d", "Ordinal Date (UTC)", t.UTC().Year(), t.UTC().YearDay())
 	}
 
-	epochDays := int(t.UTC().Sub(epoch) / day)
 	if epochDays > 0 {
 		printTime("%d (%s)", "Epoch Days", epochDays, newbase60.EncodeInt(epochDays))
 	}
