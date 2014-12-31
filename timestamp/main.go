@@ -94,14 +94,16 @@ func main() {
 
 	fmt.Printf("%s\n\n", t)
 	printTime("%d", "Unix Timestamp", t.Unix())
+
 	if t.Location() != time.UTC {
 		printTime("%s", "RFC 3339", t.Format(time.RFC3339))
 	}
 	printTime("%s", "RFC 3339 (UTC)", t.UTC().Format(time.RFC3339))
-	printTime("%d-%d", "Ordinal Date", t.Year(), t.YearDay())
-	if t.YearDay() != t.UTC().YearDay() {
-		printTime("%d-%d", "Ordinal Date (UTC)", t.UTC().Year(), t.UTC().YearDay())
+
+	if t.Location() != time.UTC {
+		printTime("%d-%d", "Ordinal Date", t.Year(), t.YearDay())
 	}
+	printTime("%d-%d", "Ordinal Date (UTC)", t.UTC().Year(), t.UTC().YearDay())
 
 	if epochDays > 0 {
 		printTime("%d (%s)", "Epoch Days", epochDays, newbase60.EncodeInt(epochDays))
