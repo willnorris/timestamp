@@ -93,20 +93,20 @@ func main() {
 	}
 
 	fmt.Printf("%s\n\n", t)
-	printTime("%d", "Unix Timestamp", t.Unix())
+	printTime("Unix Timestamp", "%d", t.Unix())
 
 	if t.Location() != time.UTC {
-		printTime("%s", "RFC 3339", t.Format(time.RFC3339))
+		printTime("RFC 3339", "%s", t.Format(time.RFC3339))
 	}
-	printTime("%s", "RFC 3339 (UTC)", t.UTC().Format(time.RFC3339))
+	printTime("RFC 3339 (UTC)", "%s", t.UTC().Format(time.RFC3339))
 
 	if t.Location() != time.UTC {
-		printTime("%d-%d", "Ordinal Date", t.Year(), t.YearDay())
+		printTime("Ordinal Date", "%d-%d", t.Year(), t.YearDay())
 	}
-	printTime("%d-%d", "Ordinal Date (UTC)", t.UTC().Year(), t.UTC().YearDay())
+	printTime("Ordinal Date (UTC)", "%d-%d", t.UTC().Year(), t.UTC().YearDay())
 
 	if epochDays > 0 {
-		printTime("%d (%s)", "Epoch Days", epochDays, newbase60.EncodeInt(epochDays))
+		printTime("Epoch Days", "%d (%s)", epochDays, newbase60.EncodeInt(epochDays))
 	}
 }
 
@@ -128,7 +128,7 @@ func parseInput(s string, loc *time.Location) time.Time {
 	return time.Time{}
 }
 
-func printTime(format, name string, a ...interface{}) {
+func printTime(name, format string, a ...interface{}) {
 	b := []interface{}{name + ":"}
 	b = append(b, a...)
 	fmt.Printf("%-19s "+format+"\n", b...)
