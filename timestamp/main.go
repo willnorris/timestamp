@@ -101,9 +101,9 @@ func main() {
 	printTime("RFC 3339 (UTC)", "%s", t.UTC().Format(time.RFC3339))
 
 	if t.Location() != time.UTC {
-		printTime("Ordinal Date", "%d-%d", t.Year(), t.YearDay())
+		printTime("Ordinal Date", "%d-%03d", t.Year(), t.YearDay())
 	}
-	printTime("Ordinal Date (UTC)", "%d-%d", t.UTC().Year(), t.UTC().YearDay())
+	printTime("Ordinal Date (UTC)", "%d-%03d", t.UTC().Year(), t.UTC().YearDay())
 
 	if epochDays > 0 {
 		printTime("Epoch Days", "%d (%s)", epochDays, newbase60.EncodeInt(epochDays))
