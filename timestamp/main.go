@@ -36,7 +36,8 @@ var (
 	printEpochDays = flag.Bool("epoch", false, "print epoch days only")
 )
 
-const usageText = `timestamp is a tool for printing timestamps in various formats.
+func usage() {
+	const text = `timestamp is a tool for printing timestamps in various formats.
 
 Usage:
   timestamp [-utc] [-rfc3339] [-epoch] [time]
@@ -60,8 +61,7 @@ system timezone unless the -utc flag is provided.
 Flags:
 `
 
-func usage() {
-	fmt.Fprintf(os.Stderr, usageText)
+	fmt.Fprintf(os.Stderr, text)
 	flag.PrintDefaults()
 }
 
