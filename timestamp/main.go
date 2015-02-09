@@ -46,8 +46,8 @@ timestamp will print the specified time in the following formats:
   - unix timestamp (number of seconds since January 1, 1970 UTC)
   - rfc 3339 timestamp in the specified timezone (if not UTC)
   - rfc 3339 timestamp in UTC
-  - ordinal date (year and day of the year) in the specified timezone
-  - ordinal date (year and day of the year) in UTC (if different than above)
+  - ordinal date (year and day of the year) in the specified timezone (if not UTC)
+  - ordinal date (year and day of the year) in UTC
   - epoch days (number of days since January 1, 1970 UTC) as decimal and
     sexigesimal (newbase60) formatted. This is only printed if date is after
     1970-01-01, and is always calculated based on UTC time.
