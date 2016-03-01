@@ -33,7 +33,7 @@ var (
 	//flags
 	utc            = flag.Bool("utc", false, "parse times without timezones as UTC")
 	printRFC3339   = flag.Bool("rfc3339", false, "print rfc 3339 timestamp only")
-	printEpochDays = flag.Bool("epoch", false, "print epoch days only")
+	printEpochDays = flag.Bool("epoch", false, "print sexigesimal epoch days only")
 )
 
 func usage() {
@@ -129,7 +129,6 @@ func parseInput(s string, loc *time.Location) time.Time {
 }
 
 func printTime(name, format string, a ...interface{}) {
-	b := []interface{}{name + ":"}
-	b = append(b, a...)
-	fmt.Printf("%-19s "+format+"\n", b...)
+	fmt.Printf("%-19s ", name+":")
+	fmt.Printf(format+"\n", a...)
 }
