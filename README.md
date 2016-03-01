@@ -14,7 +14,7 @@ Run `timestamp -help` for complete usage.
 
 ## License ##
 
-These tools are copyright Google, but are not an official Google products.
+These tools are copyright Google, but are not official Google products.
 They are available under a [BSD License][].
 
 [BSD License]: LICENSE
