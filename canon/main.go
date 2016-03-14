@@ -10,11 +10,17 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"go/ast"
 	"go/build"
+	"go/format"
+	"go/parser"
+	"go/token"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
@@ -52,7 +58,6 @@ func fixPackages(packages ...string) error {
 			if pkg.ImportComment != pkg.ImportPath {
 				return fmt.Errorf("package %q does not having matching import comment %q", pkg.ImportPath, pkg.ImportComment)
 			}
-			// skip packages with canonical import path
 			continue
 		}
 		if err := fixPackage(pkg); err != nil {
@@ -64,9 +69,56 @@ func fixPackages(packages ...string) error {
 }
 
 func fixPackage(pkg *build.Package) error {
-	// TODO(willnorris): fix the package
-	fmt.Println(pkg.ImportPath)
+	for _, file := range pkg.GoFiles {
+		filename := filepath.Join(pkg.Dir, file)
+
+		fset := token.NewFileSet()
+		pf, err := parser.ParseFile(fset, filename, nil, parser.ParseComments)
+		if err != nil {
+			return err
+		}
+
+		if pf.Doc != nil {
+			return rewriteFile(fset, pf, filename, pkg.ImportPath)
+		}
+	}
+
+	// no files have package docs.  look for file that matches pkg.Name
+	for _, file := range pkg.GoFiles {
+		if file == pkg.Name+".go" {
+			return parseAndRewriteFile(file, pkg)
+		}
+	}
+
+	log.Printf("can't find file to rewrite for package: %q (%v)", pkg.ImportPath, pkg.Name)
 	return nil
+}
+
+func parseAndRewriteFile(file string, pkg *build.Package) error {
+	filename := filepath.Join(pkg.Dir, file)
+	fset := token.NewFileSet()
+	pf, err := parser.ParseFile(fset, filename, nil, parser.ParseComments)
+	if err != nil {
+		return err
+	}
+
+	return rewriteFile(fset, pf, filename, pkg.ImportPath)
+}
+
+// rewrite filename to include importPath.
+func rewriteFile(fset *token.FileSet, pf *ast.File, filename, importPath string) error {
+	log.Printf("package: %q, rewriting %q", importPath, filename)
+	// add comment containing canonical import path
+	cmap := ast.NewCommentMap(fset, pf, pf.Comments)
+	com := &ast.Comment{Slash: pf.Name.End(), Text: `// import "` + importPath + `"`}
+	cmap[pf.Name] = []*ast.CommentGroup{{List: []*ast.Comment{com}}}
+	pf.Comments = cmap.Comments()
+
+	var buf bytes.Buffer
+	if err := format.Node(&buf, fset, pf); err != nil {
+		return err
+	}
+	return ioutil.WriteFile(filename, buf.Bytes(), 0644)
 }
 
 // list runs 'go list' with the specified arguments and returns the metadata
