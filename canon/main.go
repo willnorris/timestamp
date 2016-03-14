@@ -115,6 +115,9 @@ func rewriteFile(fset *token.FileSet, pf *ast.File, filename, importPath string)
 
 	// add comment containing canonical import path
 	cmap := ast.NewCommentMap(fset, pf, pf.Comments)
+	if cmap == nil {
+		cmap = make(ast.CommentMap)
+	}
 	com := &ast.Comment{Slash: pf.Name.End(), Text: `// import "` + importPath + `"`}
 	cmap[pf.Name] = []*ast.CommentGroup{{List: []*ast.Comment{com}}}
 	pf.Comments = cmap.Comments()
