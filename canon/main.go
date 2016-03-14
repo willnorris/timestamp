@@ -12,8 +12,10 @@ import (
 	"fmt"
 	"go/build"
 	"io"
+	"log"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 func usage() {
@@ -31,8 +33,7 @@ func main() {
 	}
 
 	if err := fixPackages(flag.Args()...); err != nil {
-		fmt.Fprintf(os.Stderr, "error listing packages: %v", err)
-		os.Exit(1)
+		log.Fatalf("error listing packages: %v", err)
 	}
 }
 
@@ -43,10 +44,28 @@ func fixPackages(packages ...string) error {
 	}
 
 	for _, pkg := range pkgs {
-		// TODO(willnorris): fix the package
-		fmt.Println(pkg.ImportPath)
+		if strings.Contains(pkg.ImportPath, "/vendor/") || strings.Contains(pkg.ImportPath, "/third_party/") {
+			// skip vendored packages
+			continue
+		}
+		if pkg.ImportComment != "" {
+			if pkg.ImportComment != pkg.ImportPath {
+				return fmt.Errorf("package %q does not having matching import comment %q", pkg.ImportPath, pkg.ImportComment)
+			}
+			// skip packages with canonical import path
+			continue
+		}
+		if err := fixPackage(pkg); err != nil {
+			return err
+		}
 	}
 
+	return nil
+}
+
+func fixPackage(pkg *build.Package) error {
+	// TODO(willnorris): fix the package
+	fmt.Println(pkg.ImportPath)
 	return nil
 }
 
