@@ -54,6 +54,10 @@ func fixPackages(packages ...string) error {
 			// skip vendored packages
 			continue
 		}
+		if len(pkg.GoFiles) == 0 {
+			// skip packages with no go files
+			continue
+		}
 		if pkg.ImportComment != "" {
 			if pkg.ImportComment != pkg.ImportPath {
 				return fmt.Errorf("package %q does not having matching import comment %q", pkg.ImportPath, pkg.ImportComment)
