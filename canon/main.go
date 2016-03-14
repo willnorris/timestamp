@@ -23,6 +23,11 @@ import (
 	"path/filepath"
 )
 
+// flags
+var (
+	dryrun = flag.Bool("n", false, "dry run: show changes, but don't apply them")
+)
+
 func usage() {
 	fmt.Fprint(os.Stderr, "usage: canon [packages]\n")
 	flag.PrintDefaults()
@@ -107,17 +112,22 @@ func parseAndRewriteFile(file string, pkg *build.Package) error {
 // rewrite filename to include importPath.
 func rewriteFile(fset *token.FileSet, pf *ast.File, filename, importPath string) error {
 	log.Printf("package: %q, rewriting %q", importPath, filename)
+
 	// add comment containing canonical import path
 	cmap := ast.NewCommentMap(fset, pf, pf.Comments)
 	com := &ast.Comment{Slash: pf.Name.End(), Text: `// import "` + importPath + `"`}
 	cmap[pf.Name] = []*ast.CommentGroup{{List: []*ast.Comment{com}}}
 	pf.Comments = cmap.Comments()
 
-	var buf bytes.Buffer
-	if err := format.Node(&buf, fset, pf); err != nil {
-		return err
+	if !*dryrun {
+		var buf bytes.Buffer
+		if err := format.Node(&buf, fset, pf); err != nil {
+			return err
+		}
+		return ioutil.WriteFile(filename, buf.Bytes(), 0644)
 	}
-	return ioutil.WriteFile(filename, buf.Bytes(), 0644)
+
+	return nil
 }
 
 // list runs 'go list' with the specified arguments and returns the metadata
