@@ -21,7 +21,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
 )
 
 func usage() {
@@ -50,10 +49,6 @@ func fixPackages(packages ...string) error {
 	}
 
 	for _, pkg := range pkgs {
-		if strings.Contains(pkg.ImportPath, "/vendor/") || strings.Contains(pkg.ImportPath, "/third_party/") {
-			// skip vendored packages
-			continue
-		}
 		if len(pkg.GoFiles) == 0 {
 			// skip packages with no go files
 			continue
