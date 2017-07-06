@@ -116,6 +116,10 @@ func parseInput(s string, loc *time.Location) time.Time {
 	}
 
 	if i, err := strconv.ParseInt(s, 10, 64); err == nil {
+		// strip sub-second precision
+		for i > 1e10 {
+			i /= 10
+		}
 		return time.Unix(i, 0).In(loc)
 	}
 

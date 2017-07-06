@@ -33,6 +33,9 @@ func TestParseInput(t *testing.T) {
 		// unix timestamp
 		{"1", time.Date(1970, 1, 1, 0, 0, 1, 0, time.UTC)},
 		{"1136214245", ref},
+		{"11362142450", ref}, // sub-second precision
+		{"113621424500", ref},
+		{"1136214245000", ref},
 	}
 
 	for _, tt := range tests {
