@@ -11,6 +11,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"regexp"
 	"strconv"
 	"time"
 
@@ -29,6 +30,9 @@ var (
 		"2006-01-02T15:04:05",
 		"2006-01-02 15:04:05",
 	}
+
+	// regex to match ordinal dates of the form YYYY-DDD
+	reOrdinalDate = regexp.MustCompile(`^(\d{4})-(\d{3})$`)
 
 	//flags
 	utc            = flag.Bool("utc", false, "parse times without timezones as UTC")
@@ -52,8 +56,9 @@ timestamp will print the specified time in the following formats:
     sexigesimal (newbase60) formatted. This is only printed if date is after
     1970-01-01, and is always calculated based on UTC time.
 
-time can be specified as a full rfc 3339 timestamp, or just the date component
-(YYYY-MM-DD).  If no time is specified, the current system time will be used.
+time can be specified as a full rfc 3339 timestamp, just the date component
+(YYYY-MM-DD), or as an ordinal date (YYYY-DDD).  If no time is specified, the
+current system time will be used.
 
 time values without an explicit timezone will be interpreted as the local
 system timezone unless the -utc flag is provided.
@@ -127,6 +132,14 @@ func parseInput(s string, loc *time.Location) time.Time {
 		if t, err := time.ParseInLocation(f, s, loc); err == nil {
 			return t
 		}
+	}
+
+	if m := reOrdinalDate.FindStringSubmatch(s); m != nil {
+		year, _ := strconv.Atoi(m[1])
+		days, _ := strconv.Atoi(m[2])
+		t := time.Date(year, 1, 1, 0, 0, 0, 0, time.UTC)
+		t = t.AddDate(0, 0, days-1)
+		return t
 	}
 
 	return time.Time{}

@@ -36,6 +36,13 @@ func TestParseInput(t *testing.T) {
 		{"11362142450", ref}, // sub-second precision
 		{"113621424500", ref},
 		{"1136214245000", ref},
+
+		// ordinal dates
+		{"2006-002", time.Date(2006, 1, 2, 0, 0, 0, 0, time.UTC)},
+		{"2010-034", time.Date(2010, 2, 3, 0, 0, 0, 0, time.UTC)},
+		{"2010-000", time.Date(2009, 12, 31, 0, 0, 0, 0, time.UTC)},
+		{"2010-999", time.Date(2012, 9, 25, 0, 0, 0, 0, time.UTC)},
+		{"2010-1000", zero},
 	}
 
 	for _, tt := range tests {
