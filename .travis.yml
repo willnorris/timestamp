@@ -1,13 +1,23 @@
 language: go
 
 go:
-  - 1.5
-  - 1.6
+  - 1.12
 
-install:
-  - mkdir -p "$GOPATH/src/willnorris.com/go"
-  - mv "$TRAVIS_BUILD_DIR" "$GOPATH/src/willnorris.com/go/tools"
-  - go get -v -t -d willnorris.com/go/tools/...
+go_import_path: willnorris.com/go/tools
+
+cache:
+  directories:
+    - $HOME/.cache/go-build
+    - $HOME/gopath/pkg/mod
+
+env:
+  global:
+    - GO111MODULE=on
 
 script:
-  - go test -v willnorris.com/go/tools/...
+  - diff -u <(echo -n) <(gofmt -d -s .)
+  - go vet ./...
+  - go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+after_success:
+    - bash <(curl -s https://codecov.io/bash)
