@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.org/willnorris/tools.svg?branch=master)](https://travis-ci.org/willnorris/tools) [![GoDoc](https://godoc.org/willnorris.com/go/tools?status.svg)](https://godoc.org/willnorris.com/go/tools) [![BSD License](https://img.shields.io/badge/license-BSD-blue.svg?style=flat)](LICENSE)
+[![GoDoc](https://godoc.org/willnorris.com/go/tools?status.svg)](https://godoc.org/willnorris.com/go/tools) 
+[![Test Status](https://github.com/willnorris/tools/workflows/tests/badge.svg)](https://github.com/willnorris/tools/actions?query=workflow%3Atests)
+[![Test Coverage](https://codecov.io/gh/willnorris/tools/branch/master/graph/badge.svg)](https://codecov.io/gh/willnorris/tools)
 
 This repository contains assorted command line tools that aren't quite big
 enough to justify their own repository.
