@@ -21,6 +21,9 @@ import (
 const day = 24 * time.Hour
 const year = 365 * day
 
+// simple, readable time format.  Based off of Time.String() without subseconds
+const stdFormat = "2006-01-02 15:04:05 -0700 MST"
+
 var (
 	epoch = time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC)
 
@@ -126,7 +129,7 @@ func printOutput(w io.Writer, t time.Time, loc *time.Location) {
 		return
 	}
 
-	fmt.Fprintf(w, "%s\n\n", t)
+	fmt.Fprintf(w, "%s\n\n", t.Format(stdFormat))
 	printTime(w, "Unix Timestamp", "%d", t.Unix())
 
 	if t.Location() != time.UTC {
