@@ -1,4 +1,4 @@
-[![GoDoc](https://godoc.org/willnorris.com/go/tools?status.svg)](https://godoc.org/willnorris.com/go/tools) 
+[![GoDoc](https://img.shields.io/static/v1?label=godoc&message=reference&color=blue)](https://pkg.go.dev/willnorris.com/go/tools)
 [![Test Status](https://github.com/willnorris/tools/workflows/tests/badge.svg)](https://github.com/willnorris/tools/actions?query=workflow%3Atests)
 [![Test Coverage](https://codecov.io/gh/willnorris/tools/branch/master/graph/badge.svg)](https://codecov.io/gh/willnorris/tools)
 
