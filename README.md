@@ -1,6 +1,6 @@
 [![GoDoc](https://img.shields.io/static/v1?label=godoc&message=reference&color=blue)](https://pkg.go.dev/willnorris.com/go/tools)
 [![Test Status](https://github.com/willnorris/tools/workflows/tests/badge.svg)](https://github.com/willnorris/tools/actions?query=workflow%3Atests)
-[![Test Coverage](https://codecov.io/gh/willnorris/tools/branch/master/graph/badge.svg)](https://codecov.io/gh/willnorris/tools)
+[![Test Coverage](https://codecov.io/gh/willnorris/tools/branch/main/graph/badge.svg)](https://codecov.io/gh/willnorris/tools)
 
 This repository contains assorted command line tools that aren't quite big
 enough to justify their own repository.
