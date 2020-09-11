@@ -59,8 +59,8 @@ timestamp will print the specified time in the following formats:
     1970-01-01, and is always calculated based on UTC time.
 
 time can be specified as a full rfc 3339 timestamp, just the date component
-(YYYY-MM-DD), or as an ordinal date (YYYY-DDD).  If no time is specified, the
-current system time will be used.
+(YYYY-MM-DD), an ordinal date (YYYY-DDD), or as newbase60 encoded epoch days.
+If no time is specified, the current system time will be used.
 
 time values without an explicit timezone will be interpreted as the local
 system timezone unless the -utc flag is provided.
@@ -68,7 +68,7 @@ system timezone unless the -utc flag is provided.
 Flags:
 `
 
-	fmt.Fprintf(os.Stderr, text)
+	fmt.Fprint(os.Stderr, text)
 	flag.PrintDefaults()
 }
 
