@@ -94,12 +94,12 @@ func parseInput(s string, loc *time.Location) (t time.Time, err error) {
 		return time.Now().In(loc), nil
 	}
 
-	if i, err := strconv.ParseInt(s, 10, 64); err == nil {
+	if i, err := strconv.ParseFloat(s, 64); err == nil {
 		// strip sub-second precision
 		for i > 1e10 {
 			i /= 10
 		}
-		return time.Unix(i, 0).In(loc), nil
+		return time.Unix(int64(i), 0).In(loc), nil
 	}
 
 	for _, f := range inputFormats {

@@ -34,6 +34,7 @@ func TestParseInput(t *testing.T) {
 		{"11362142450", ref, false}, // sub-second precision
 		{"113621424500", ref, false},
 		{"1136214245000", ref, false},
+		{"1136214245000.00", ref, false},
 
 		// ordinal dates
 		{"2006-002", time.Date(2006, 1, 2, 0, 0, 0, 0, time.UTC), false},
