@@ -51,6 +51,7 @@ Usage:
 timestamp will print the specified time in the following formats:
   - unix timestamp (number of seconds since January 1, 1970 UTC)
   - rfc 3339 timestamp in the specified timezone (if not UTC)
+  - rfc 3339 timestamp in local timezone (if not specified tz or UTC)
   - rfc 3339 timestamp in UTC
   - ordinal date (year and day of the year) in the specified timezone (if not UTC)
   - ordinal date (year and day of the year) in UTC
@@ -134,6 +135,9 @@ func printOutput(w io.Writer, t time.Time, loc *time.Location) {
 
 	if t.Location() != time.UTC {
 		printTime(w, "RFC 3339", "%s", t.Format(time.RFC3339))
+		if t.Location() != time.Local {
+			printTime(w, "RFC 3339 (Local)", "%s", t.Local().Format(time.RFC3339))
+		}
 	}
 	printTime(w, "RFC 3339 (UTC)", "%s", t.UTC().Format(time.RFC3339))
 
