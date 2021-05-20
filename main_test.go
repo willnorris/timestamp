@@ -1,3 +1,6 @@
+// Copyright 2014 The timestamp authors
+// SPDX-License-Identifier: BSD-3-Clause
+
 package main
 
 import (

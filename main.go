@@ -1,8 +1,5 @@
-// Copyright 2014 Google Inc. All rights reserved.
-//
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file or at
-// https://developers.google.com/open-source/licenses/bsd
+// Copyright 2014 The timestamp authors
+// SPDX-License-Identifier: BSD-3-Clause
 
 // The timestamp tool prints timestamps in various formats.
 package main
