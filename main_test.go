@@ -34,10 +34,15 @@ func TestParseInput(t *testing.T) {
 		// unix timestamp
 		{"1", time.Date(1970, 1, 1, 0, 0, 1, 0, time.UTC), false},
 		{"1136214245", ref, false},
-		{"11362142450", ref, false}, // sub-second precision
-		{"113621424500", ref, false},
-		{"1136214245000", ref, false},
-		{"1136214245000.00", ref, false},
+
+		// sub-second precision
+		{"113621424500000", ref, false},
+		{"11362142451", ref.Add(100 * time.Millisecond), false},
+		{"113621424512", ref.Add(120 * time.Millisecond), false},
+		{"1136214245123", ref.Add(123 * time.Millisecond), false},
+		{"1136214245123456", ref.Add(123456 * time.Microsecond), false},
+		{"1136214245123456789", ref.Add(123456789 * time.Nanosecond), false},
+		{"11362142451234567898765", ref.Add(123456789 * time.Nanosecond), false},
 
 		// ordinal dates
 		{"2006-002", time.Date(2006, 1, 2, 0, 0, 0, 0, time.UTC), false},

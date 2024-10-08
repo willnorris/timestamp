@@ -8,6 +8,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"math"
 	"os"
 	"strconv"
 	"time"
@@ -37,6 +38,8 @@ var (
 	utc            = flag.Bool("utc", false, "parse times without timezones as UTC")
 	printRFC3339   = flag.Bool("rfc3339", false, "print rfc 3339 timestamp only")
 	printEpochDays = flag.Bool("epoch", false, "print sexigesimal epoch days only")
+	printMilli     = flag.Bool("milli", false, "print unix timestamp in milliseconds")
+	printNano      = flag.Bool("nano", false, "print unix timestamp in nanoseconds")
 )
 
 func usage() {
@@ -92,12 +95,23 @@ func parseInput(s string, loc *time.Location) (t time.Time, err error) {
 		return time.Now().In(loc), nil
 	}
 
-	if i, err := strconv.ParseFloat(s, 64); err == nil {
-		// strip sub-second precision
-		for i > 1e10 {
-			i /= 10
+	if f, err := strconv.ParseFloat(s, 64); err == nil {
+		d := int64(f)
+		var n int64
+
+		// If greater than 10 digits, we're either dealing with a unix timestamp after 2286-11-20
+		// or we have a timestamp after 2001-09-08 with sub-second precision.
+		// We assume the latter and treat anything after the 10th digit as fractional seconds.
+		if len(s) > 10 {
+			if len(s) > 19 {
+				// 19 digits is nanosecond precision, which is all Go supports
+				s = s[:19]
+			}
+			d, _ = strconv.ParseInt(s[:10], 10, 64)
+			n, _ = strconv.ParseInt(s[10:], 10, 64)
+			n *= int64(math.Pow10(19 - len(s)))
 		}
-		return time.Unix(int64(i), 0).In(loc), nil
+		return time.Unix(d, n).In(loc), nil
 	}
 
 	for _, f := range inputFormats {
@@ -124,6 +138,16 @@ func printOutput(w io.Writer, t time.Time, loc *time.Location) {
 
 	if *printEpochDays {
 		fmt.Fprint(w, newbase60.EncodeInt(epochDays))
+		return
+	}
+
+	if *printMilli {
+		fmt.Fprint(w, t.UnixNano()/1e3)
+		return
+	}
+
+	if *printNano {
+		fmt.Fprint(w, t.UnixNano())
 		return
 	}
 
